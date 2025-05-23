@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+[⚠️ Suspicious Content] <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -94,6 +94,26 @@
         .parallax-layer {
             transition: transform 0.1s ease-out;
         }
+
+        .video-modal {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .video-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .video-thumbnail {
+            transition: all 0.3s ease;
+        }
+
+        .video-thumbnail:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -102,6 +122,22 @@
     
     <!-- Floating Particles -->
     <div id="particles"></div>
+    
+    <!-- Video Modal -->
+    <div id="video-modal" class="video-modal fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4">
+        <div class="relative w-full max-w-4xl">
+            <button id="close-modal" class="absolute -top-12 left-0 text-white text-3xl hover:text-purple-400 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="aspect-w-16 aspect-h-9 w-full">
+                <iframe id="video-iframe" class="w-full h-96 md:h-[500px] rounded-lg" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="mt-4 text-center">
+                <h3 class="text-2xl font-bold text-purple-400">מדריך שיפור כיוון בפורטנייט</h3>
+                <p class="text-purple-200 mt-2">למד את הטכניקות הטובות ביותר לשיפור הכיוון שלך</p>
+            </div>
+        </div>
+    </div>
     
     <!-- Main Content -->
     <div class="min-h-screen flex flex-col items-center justify-center px-4 py-20 relative">
@@ -244,8 +280,9 @@
                             <h4 class="font-bold text-blue-300 mb-2">טיפ מהיר:</h4>
                             <p class="text-sm">התאמן על בניית 90s במשך 10 דקות כל יום לפני שאתה נכנס למשחקים אמיתיים.</p>
                         </div>
-                        <button class="glow-btn bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-6 rounded-full text-sm">
-                            צפה במדריכי וידאו
+                        <button id="video-btn" class="glow-btn bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-8 rounded-full text-lg flex items-center justify-center space-x-2">
+                            <i class="fas fa-play"></i>
+                            <span>צפה במדריכי וידאו</span>
                         </button>
                     </div>
                 </div>
@@ -543,6 +580,59 @@
                 scale: 1,
                 duration: 0.3
             });
+        });
+
+        // Video modal functionality
+        const videoBtn = document.getElementById('video-btn');
+        const videoModal = document.getElementById('video-modal');
+        const closeModal = document.getElementById('close-modal');
+        const videoIframe = document.getElementById('video-iframe');
+
+        videoBtn.addEventListener('click', () => {
+            // Set the video URL (replace with your actual video URL)
+            videoIframe.src = 'https://ai.invideo.io/watch/uOk5tU1kgjW';
+            
+            // Show the modal with animation
+            gsap.to(videoModal, {
+                opacity: 1,
+                visibility: 'visible',
+                duration: 0.3
+            });
+            
+            // Add a nice effect to the button
+            gsap.to(videoBtn, {
+                scale: 0.95,
+                duration: 0.2,
+                yoyo: true,
+                repeat: 1
+            });
+        });
+
+        closeModal.addEventListener('click', () => {
+            // Hide the modal with animation
+            gsap.to(videoModal, {
+                opacity: 0,
+                visibility: 'hidden',
+                duration: 0.3,
+                onComplete: () => {
+                    // Pause the video when modal is closed
+                    videoIframe.src = '';
+                }
+            });
+        });
+
+        // Close modal when clicking outside
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) {
+                gsap.to(videoModal, {
+                    opacity: 0,
+                    visibility: 'hidden',
+                    duration: 0.3,
+                    onComplete: () => {
+                        videoIframe.src = '';
+                    }
+                });
+            }
         });
     </script>
 </body>
