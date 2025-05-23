@@ -1,0 +1,549 @@
+[⚠️ Suspicious Content] <!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>איך להשתפר בפורטנייט - מדריך מתקדם</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Heebo', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background: #0f0c29;
+            color: white;
+            perspective: 1000px;
+        }
+        
+        #scene-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .hero-title {
+            text-shadow: 0 0 15px rgba(138, 43, 226, 0.8);
+            animation: pulse 2s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 15px rgba(138, 43, 226, 0.8); }
+            100% { text-shadow: 0 0 25px rgba(138, 43, 226, 1); }
+        }
+        
+        .glow-btn {
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.6);
+            transition: all 0.3s ease;
+        }
+        
+        .glow-btn:hover {
+            box-shadow: 0 0 25px rgba(138, 43, 226, 0.9);
+            transform: translateY(-3px);
+        }
+        
+        .section-card {
+            backdrop-filter: blur(10px);
+            background: rgba(15, 12, 41, 0.7);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .section-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 20px 30px rgba(138, 43, 226, 0.2);
+        }
+        
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(138, 43, 226, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .character-tooltip {
+            opacity: 0;
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+        }
+        
+        .character:hover .character-tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .parallax-layer {
+            transition: transform 0.1s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Scene Container -->
+    <div id="scene-container"></div>
+    
+    <!-- Floating Particles -->
+    <div id="particles"></div>
+    
+    <!-- Main Content -->
+    <div class="min-h-screen flex flex-col items-center justify-center px-4 py-20 relative">
+        <!-- Hero Section -->
+        <section class="max-w-6xl mx-auto text-center mb-20 mt-10 relative z-10">
+            <h1 class="hero-title text-5xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
+                איך להשתפר בפורטנייט
+            </h1>
+            <p class="text-xl md:text-2xl mb-10 text-purple-200 max-w-3xl mx-auto">
+                המדריך האולטימטיבי לשיפור הכיוון, הבנייה והעריכה בפורטנייט
+            </p>
+            <button id="start-btn" class="glow-btn bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xl font-bold py-4 px-10 rounded-full hover:from-purple-700 hover:to-blue-700">
+                התחל את המסע שלך
+            </button>
+            
+            <!-- Floating Character -->
+            <div class="character absolute -right-20 top-1/2 transform -translate-y-1/2 hidden md:block">
+                <div class="relative">
+                    <img src="https://mir-s3-cdn-cf.behance.net/projects/404/f1c826162393597.Y3JvcCwxMzgwLDEwODAsMjcwLDA.png" alt="Fortnite Character" class="w-40 h-40 floating">
+                    <div class="character-tooltip absolute left-0 bottom-full mb-4 bg-purple-900 text-white p-3 rounded-lg w-64 text-right">
+                        <p class="text-sm">היי גיימר! מוכן לשדרג את הכישורים שלך? לחץ על הכפתור כדי להתחיל!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Main Sections -->
+        <div id="main-sections" class="max-w-6xl mx-auto opacity-0 invisible transition-all duration-500">
+            <!-- Aim Section -->
+            <section class="section-card p-8 mb-16 rounded-xl relative overflow-hidden">
+                <div class="absolute -top-20 -right-20 w-64 h-64 bg-purple-500 rounded-full opacity-20 blur-3xl"></div>
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                        <h2 class="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
+                            שיפור כיוון
+                        </h2>
+                        <p class="text-lg mb-6 text-purple-100">
+                            הכיוון הוא הבסיס לכל קרב בפורטנייט. כאן תלמד איך לשפר את הדיוק שלך עם כל סוגי הנשקים.
+                        </p>
+                        <ul class="space-y-3 text-purple-200">
+                            <li class="flex items-center">
+                                <i class="fas fa-crosshairs mr-2 text-purple-400"></i>
+                                קודי מפות אימון מומלצות
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-stopwatch mr-2 text-purple-400"></i>
+                                שגרת אימון יומית
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-video mr-2 text-purple-400"></i>
+                                מדריכי וידאו בעברית
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-trophy mr-2 text-purple-400"></i>
+                                תרגילי Aim Lab מומלצים
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2">
+                        <div class="bg-purple-900 bg-opacity-50 p-6 rounded-lg border border-purple-700">
+                            <h3 class="text-2xl font-bold mb-4 text-center">קודי מפות אימון</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-purple-800 p-3 rounded text-center">
+                                    <p class="font-bold">תרגול AR</p>
+                                    <p class="text-sm">8022-6842-4965</p>
+                                </div>
+                                <div class="bg-purple-800 p-3 rounded text-center">
+                                    <p class="font-bold">תרגול Sniper</p>
+                                    <p class="text-sm">7569-5862-9262</p>
+                                </div>
+                                <div class="bg-purple-800 p-3 rounded text-center">
+                                    <p class="font-bold">תרגול SMG</p>
+                                    <p class="text-sm">8022-6842-4965</p>
+                                </div>
+                                <div class="bg-purple-800 p-3 rounded text-center">
+                                    <p class="font-bold">תרגול Shotgun</p>
+                                    <p class="text-sm">8022-6842-4965</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Build Section -->
+            <section class="section-card p-8 mb-16 rounded-xl relative overflow-hidden">
+                <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-500 rounded-full opacity-20 blur-3xl"></div>
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 order-2 md:order-1">
+                        <div class="bg-blue-900 bg-opacity-50 p-6 rounded-lg border border-blue-700">
+                            <h3 class="text-2xl font-bold mb-4 text-center">טכניקות בנייה</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="bg-blue-700 p-2 rounded-full mr-3">
+                                        <i class="fas fa-cubes text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold">90s מהירים</h4>
+                                        <p class="text-sm text-blue-200">איך לבנות 90s בצורה מהירה ויעילה</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="bg-blue-700 p-2 rounded-full mr-3">
+                                        <i class="fas fa-retweet text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold">רטייקים</h4>
+                                        <p class="text-sm text-blue-200">טכניקות רטייק מתקדמות</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="bg-blue-700 p-2 rounded-full mr-3">
+                                        <i class="fas fa-running text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold">מרוצי בנייה</h4>
+                                        <p class="text-sm text-blue-200">קודי מפות לאימון בנייה מהירה</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="bg-blue-700 p-2 rounded-full mr-3">
+                                        <i class="fas fa-keyboard text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold">המלצות מקשים</h4>
+                                        <p class="text-sm text-blue-200">הגדרות מקשים אופטימליות</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 order-1 md:order-2 mb-8 md:mb-0 md:pl-8">
+                        <h2 class="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+                            שליטה בבנייה
+                        </h2>
+                        <p class="text-lg mb-6 text-blue-100">
+                            הבנייה היא מה שמבדיל בין שחקן טוב לשחקן מצוין. כאן תלמד את כל הטכניקות המתקדמות.
+                        </p>
+                        <div class="bg-blue-900 bg-opacity-30 p-4 rounded-lg mb-6">
+                            <h4 class="font-bold text-blue-300 mb-2">טיפ מהיר:</h4>
+                            <p class="text-sm">התאמן על בניית 90s במשך 10 דקות כל יום לפני שאתה נכנס למשחקים אמיתיים.</p>
+                        </div>
+                        <button class="glow-btn bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-6 rounded-full text-sm">
+                            צפה במדריכי וידאו
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Edit Section -->
+            <section class="section-card p-8 mb-16 rounded-xl relative overflow-hidden">
+                <div class="absolute -top-20 -left-20 w-64 h-64 bg-indigo-500 rounded-full opacity-20 blur-3xl"></div>
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                        <h2 class="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">
+                            שיפור עריכה
+                        </h2>
+                        <p class="text-lg mb-6 text-indigo-100">
+                            עריכה מהירה ומדויקת יכולה לתת לך יתרון עצום בקרבות. כאן תלמד איך לערוך כמו שחקן מקצועי.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-indigo-800 p-3 rounded text-center">
+                                <i class="fas fa-edit text-2xl mb-2 text-indigo-300"></i>
+                                <p class="font-bold">עריכות בסיסיות</p>
+                            </div>
+                            <div class="bg-indigo-800 p-3 rounded text-center">
+                                <i class="fas fa-bolt text-2xl mb-2 text-indigo-300"></i>
+                                <p class="font-bold">עריכות מתקדמות</p>
+                            </div>
+                            <div class="bg-indigo-800 p-3 rounded text-center">
+                                <i class="fas fa-fire text-2xl mb-2 text-indigo-300"></i>
+                                <p class="font-bold">שילוב בנייה ועריכה</p>
+                            </div>
+                            <div class="bg-indigo-800 p-3 rounded text-center">
+                                <i class="fas fa-brain text-2xl mb-2 text-indigo-300"></i>
+                                <p class="font-bold">אימון זיכרון שרירי</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2">
+                        <div class="bg-indigo-900 bg-opacity-50 p-6 rounded-lg border border-indigo-700">
+                            <h3 class="text-2xl font-bold mb-4 text-center">תרגילי חימום לעריכה</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center bg-indigo-800 p-3 rounded">
+                                    <span>עריכת קירות מהירה</span>
+                                    <span class="bg-indigo-700 px-2 py-1 rounded text-xs">קוד: 2849-3829-4938</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-indigo-800 p-3 rounded">
+                                    <span>מרוץ עריכות</span>
+                                    <span class="bg-indigo-700 px-2 py-1 rounded text-xs">קוד: 3829-4938-2849</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-indigo-800 p-3 rounded">
+                                    <span>תרגול עריכות בקרב</span>
+                                    <span class="bg-indigo-700 px-2 py-1 rounded text-xs">קוד: 4938-2849-3829</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-indigo-800 p-3 rounded">
+                                    <span>שילוב בנייה ועריכה</span>
+                                    <span class="bg-indigo-700 px-2 py-1 rounded text-xs">קוד: 3829-4938-2849</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-purple-900 bg-opacity-30 py-8 border-t border-purple-800">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
+                        פורטנייט ישראל
+                    </h3>
+                    <p class="text-purple-300 mt-2">המדריך האולטימטיבי לשיפור הכישורים שלך</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-purple-300 hover:text-white text-2xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-purple-300 hover:text-white text-2xl">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="#" class="text-purple-300 hover:text-white text-2xl">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="#" class="text-purple-300 hover:text-white text-2xl">
+                        <i class="fab fa-twitch"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-purple-800 mt-8 pt-8 text-center text-purple-400">
+                <p>© 2023 פורטנייט ישראל. כל הזכויות שמורות. זה לא אתר רשמי של Fortnite או Epic Games.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Initialize Three.js scene
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('scene-container').appendChild(renderer.domElement);
+        
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(1, 1, 1);
+        scene.add(directionalLight);
+        
+        // Add Fortnite-like background
+        const geometry = new THREE.BoxGeometry(100, 100, 100);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x0f0c29,
+            side: THREE.BackSide
+        });
+        const skybox = new THREE.Mesh(geometry, material);
+        scene.add(skybox);
+        
+        // Add floating Fortnite islands
+        const islands = [];
+        const islandColors = [0x8a2be2, 0x4b0082, 0x9932cc, 0x9400d3];
+        
+        for (let i = 0; i < 8; i++) {
+            const size = Math.random() * 5 + 5;
+            const islandGeometry = new THREE.SphereGeometry(size, 32, 32);
+            const islandMaterial = new THREE.MeshPhongMaterial({
+                color: islandColors[Math.floor(Math.random() * islandColors.length)],
+                emissive: 0x8a2be2,
+                emissiveIntensity: 0.2,
+                shininess: 30
+            });
+            
+            const island = new THREE.Mesh(islandGeometry, islandMaterial);
+            island.position.x = (Math.random() - 0.5) * 80;
+            island.position.y = (Math.random() - 0.5) * 40;
+            island.position.z = (Math.random() - 0.5) * 80 - 50;
+            
+            // Add some floating platforms
+            if (Math.random() > 0.5) {
+                const platformGeometry = new THREE.CylinderGeometry(size * 0.8, size * 0.8, 1, 32);
+                const platformMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x483d8b,
+                    emissive: 0x483d8b,
+                    emissiveIntensity: 0.1
+                });
+                
+                const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+                platform.position.y = -size - 1;
+                island.add(platform);
+            }
+            
+            islands.push(island);
+            scene.add(island);
+        }
+        
+        // Add some floating particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1000;
+        const posArray = new Float32Array(particlesCount * 3);
+        
+        for (let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 100;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.2,
+            color: 0x8a2be2,
+            transparent: true,
+            opacity: 0.8
+        });
+        
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+        
+        // Set camera position
+        camera.position.z = 30;
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotate islands
+            islands.forEach(island => {
+                island.rotation.x += 0.001;
+                island.rotation.y += 0.002;
+            });
+            
+            // Rotate particles
+            particlesMesh.rotation.x += 0.0005;
+            particlesMesh.rotation.y += 0.001;
+            
+            // Move camera slightly for parallax effect
+            camera.position.x = Math.sin(Date.now() * 0.0005) * 5;
+            camera.position.y = Math.cos(Date.now() * 0.0003) * 3;
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // Create floating particles for background
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 5 + 2;
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight;
+                const delay = Math.random() * 5;
+                const duration = 10 + Math.random() * 20;
+                const opacity = 0.2 + Math.random() * 0.5;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}px`;
+                particle.style.top = `${posY}px`;
+                particle.style.opacity = opacity;
+                particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        createParticles();
+        
+        // Handle start button click
+        document.getElementById('start-btn').addEventListener('click', function() {
+            gsap.to(this, {
+                scale: 0.9,
+                duration: 0.2,
+                yoyo: true,
+                repeat: 1
+            });
+            
+            gsap.to('#main-sections', {
+                opacity: 1,
+                visibility: 'visible',
+                duration: 1
+            });
+            
+            // Scroll to sections
+            gsap.to(window, {
+                duration: 1,
+                scrollTo: '#main-sections',
+                ease: 'power2.inOut'
+            });
+        });
+        
+        // Parallax effect for sections
+        const parallaxSections = document.querySelectorAll('.section-card');
+        
+        window.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
+            
+            parallaxSections.forEach((section, index) => {
+                const speed = 0.05 * (index + 1);
+                gsap.to(section, {
+                    x: x * 20 * speed,
+                    y: -y * 20 * speed,
+                    rotationY: x * 5 * speed,
+                    rotationX: y * 5 * speed,
+                    duration: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+        
+        // Tooltip for character
+        const character = document.querySelector('.character');
+        
+        character.addEventListener('mouseenter', () => {
+            gsap.to(character, {
+                scale: 1.1,
+                duration: 0.3
+            });
+        });
+        
+        character.addEventListener('mouseleave', () => {
+            gsap.to(character, {
+                scale: 1,
+                duration: 0.3
+            });
+        });
+    </script>
+</body>
+</html>
